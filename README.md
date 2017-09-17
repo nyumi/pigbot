@@ -12,6 +12,13 @@ available, etc!
 [hubot]: http://hubot.github.com
 [generator-hubot]: https://github.com/github/generator-hubot
 
+### Set up
+
+set following environmental variable before runnning.
+export HUBOT_SLACK_TOKEN="your hubot slack token"
+export CHANNEL_ID="channel id where hubot working"
+export USER_ID="your hubot id"
+
 ### Running pigbot Locally
 
 You can test your hubot by running the following, however some plugins will not

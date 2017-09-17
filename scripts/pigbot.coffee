@@ -18,13 +18,13 @@ module.exports = (robot) ->
     oldestMilliSec = new Date(today.getFullYear(), today.getMonth(), today.getDate()).getTime() / 1000
 
     request = msg.http('https://slack.com/api/channels.history')
-                  .query(token: "xoxb-223873516423-FduoDrpoHunPIyzG98iVCzYx",channel:"C096P24G4",oldest:oldestMilliSec)
+                  .query(token: process.env.HUBOT_SLACK_TOKEN, channel:process.env.CHANNEL_ID, oldest:oldestMilliSec)
                   .post()    
                   
     request (err, res, body) ->
       json = JSON.parse body
       contents = json.messages
-                .filter((v) -> v.user == "U6KRPF6CF")
+                .filter((v) -> v.user == process.env.USER_ID)
                 .filter((z) -> z.text.startsWith("[Job]"))
                 .reverse()
       if contents.length == 0
@@ -57,4 +57,3 @@ module.exports = (robot) ->
           cost = formatTime(contents[i+1].ts - val.ts)
           resultList.push("#{val.text.slice(5)}:#{cost}\r\n")
       msg.send "はいやで\r\n #{resultList.join('')}"
-      
