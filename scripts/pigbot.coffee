@@ -9,9 +9,8 @@ module.exports = (robot) ->
   robot.hear /ばな/, (msg) ->
     msg.send ":dog:" 
    
-  robot.hear /じょぶ/, (msg) ->  
-    chompedmsg =   msg.message.text.slice(3)
-    msg.send "[Job] #{chompedmsg}" 
+  robot.hear /#___/, (msg) ->  
+    msg.send msg.message.text 
 
   robot.respond /集計して/i, (msg) ->
     today = new Date()
@@ -25,8 +24,10 @@ module.exports = (robot) ->
       json = JSON.parse body
       contents = json.messages
                 .filter((v) -> v.user == process.env.USER_ID)
-                .filter((z) -> z.text.startsWith("[Job]"))
+                .filter((z) -> z.text.startsWith("#___"))
                 .reverse()
+
+      # console.log contents          
       if contents.length == 0
          msg.send "ないやで"
          return
@@ -46,14 +47,73 @@ module.exports = (robot) ->
           result += sec + '秒'
         result  
 
-      resultList = []
-
-      for val, i in contents
+      resultList = contents.map((val,i)->
         if i == contents.length-1
-          cost = formatTime(Date.now()/ 1000 - val.ts)
-          resultList.push("#{val.text.slice(5)}:#{cost}\r\n")
-          # console.log "#{i}:#{JSON.stringify(contents[i])}"
-        if (i + 1 < contents.length)  
-          cost = formatTime(contents[i+1].ts - val.ts)
-          resultList.push("#{val.text.slice(5)}:#{cost}\r\n")
-      msg.send "はいやで\r\n #{resultList.join('')}"
+          obj = {}
+          task = val.text.slice(4)
+          cost = (Date.now()/ 1000 - val.ts)
+          obj[task] = cost
+          return obj
+
+        if (i + 1 < contents.length)
+          obj = {}          
+          task = val.text.slice(4)
+          cost = (contents[i+1].ts - val.ts)
+          obj[task] = cost 
+          return obj         
+      )
+
+      # resultList2 = resultList.map((result, i, arry) ->
+      #   key = Object.keys(result)[0]
+      #   if arry[key]
+      #     arry[key]+= result[key]
+      #     return 
+      #   else
+      #     return result
+      # )
+
+      resultList2 = []
+
+      hasSameTask = (list,taskName,result) ->
+        if list.length == 0
+          return false
+        for obj in list
+          console.log obj
+          taskInList = Object.keys(obj)[0]
+          if taskName == taskInList
+            obj[taskInList] += result[taskName]
+            return true
+        return false
+          
+      for result in resultList
+        task = Object.keys(result)[0]
+
+        if not hasSameTask(resultList2,task, result)
+          resultList2.push(result)
+    
+
+      console.log resultList2
+      resultList3 = resultList2.map((result)->
+        key = Object.keys(result)[0]
+        # console.log result.key
+        "#{key}:#{formatTime(result[key])}"
+      )
+
+      # for val, i in contents
+      #   if i == contents.length-1
+      #     obj = {}
+      #     task = val.text.slice(4)
+      #     cost = (Date.now()/ 1000 - val.ts)
+      #     obj[task] = cost
+      #     resultList.push(obj)
+      #   if (i + 1 < contents.length)
+      #     obj = {}          
+      #     task = val.text.slice(4)
+      #     cost = (contents[i+1].ts - val.ts)
+      #     obj[task] = cost          
+      #     resultList.push(obj)
+      # console.log resultList
+
+
+      # msg.send "はいやで\r\n #{resultList2.join('')}"
+      msg.send "はいやで\r\n #{resultList3}"
