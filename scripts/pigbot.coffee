@@ -91,23 +91,5 @@ module.exports = (robot) ->
         "#{key}:#{formatTime(result[key])}\r\n"
       )
 
-      # for val, i in contents
-      #   if i == contents.length-1
-      #     obj = {}
-      #     task = val.text.slice(4)
-      #     cost = (Date.now()/ 1000 - val.ts)
-      #     obj[task] = cost
-      #     resultList.push(obj)
-      #   if (i + 1 < contents.length)
-      #     obj = {}          
-      #     task = val.text.slice(4)
-      #     cost = (contents[i+1].ts - val.ts)
-      #     obj[task] = cost          
-      #     resultList.push(obj)
-      # console.log resultList
-
-
-      # msg.send "はいやで\r\n #{resultList2.join('')}"
-      # console.log resultList3.join('')
       console.log resultList3
       msg.send "はいやで\r\n #{resultList3.join('')}"
