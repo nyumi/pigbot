@@ -63,14 +63,6 @@ module.exports = (robot) ->
           return obj         
       )
 
-      # resultList2 = resultList.map((result, i, arry) ->
-      #   key = Object.keys(result)[0]
-      #   if arry[key]
-      #     arry[key]+= result[key]
-      #     return 
-      #   else
-      #     return result
-      # )
 
       resultList2 = []
 
@@ -78,13 +70,13 @@ module.exports = (robot) ->
         if list.length == 0
           return false
         for obj in list
-          console.log obj
+          # console.log obj
           taskInList = Object.keys(obj)[0]
           if taskName == taskInList
             obj[taskInList] += result[taskName]
             return true
         return false
-          
+
       for result in resultList
         task = Object.keys(result)[0]
 
@@ -92,11 +84,11 @@ module.exports = (robot) ->
           resultList2.push(result)
     
 
-      console.log resultList2
+      # console.log resultList2
       resultList3 = resultList2.map((result)->
         key = Object.keys(result)[0]
         # console.log result.key
-        "#{key}:#{formatTime(result[key])}"
+        "#{key}:#{formatTime(result[key])}\r\n"
       )
 
       # for val, i in contents
@@ -116,4 +108,6 @@ module.exports = (robot) ->
 
 
       # msg.send "はいやで\r\n #{resultList2.join('')}"
-      msg.send "はいやで\r\n #{resultList3}"
+      # console.log resultList3.join('')
+      console.log resultList3
+      msg.send "はいやで\r\n #{resultList3.join('')}"
